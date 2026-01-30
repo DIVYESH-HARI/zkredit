@@ -1,64 +1,65 @@
-#!/usr/bin/env bash
-set -eo pipefail
+<#
+.SYNOPSIS
+    Installs Foundry (forge, cast, anvil, chisel) on Windows.
+.DESCRIPTION
+    Downloads the latest nightly release from GitHub, extracts it to ~/.foundry/bin,
+    and adds the directory to the user's PATH.
+#>
 
-echo "Installing foundryup..."
+$ErrorActionPreference = "Stop"
 
-BASE_DIR="${XDG_CONFIG_HOME:-$HOME}"
-FOUNDRY_DIR="${FOUNDRY_DIR:-"$BASE_DIR/.foundry"}"
-FOUNDRY_BIN_DIR="$FOUNDRY_DIR/bin"
-FOUNDRY_MAN_DIR="$FOUNDRY_DIR/share/man/man1"
+Write-Host "Installing Foundry (Windows)..." -ForegroundColor Cyan
 
-BIN_URL="https://raw.githubusercontent.com/foundry-rs/foundry/HEAD/foundryup/foundryup"
-BIN_PATH="$FOUNDRY_BIN_DIR/foundryup"
+# Define paths
+$BaseDir = [System.Environment]::GetFolderPath("UserProfile")
+$FoundryDir = Join-Path $BaseDir ".foundry"
+$BinDir = Join-Path $FoundryDir "bin"
+$ZipPath = Join-Path $FoundryDir "foundry.zip"
 
-# Create the .foundry bin directory and foundryup binary if it doesn't exist.
-mkdir -p "$FOUNDRY_BIN_DIR"
-curl -sSf -L "$BIN_URL" -o "$BIN_PATH"
-chmod +x "$BIN_PATH"
+# Ensure directories exist
+if (-not (Test-Path -Path $BinDir)) {
+    New-Item -ItemType Directory -Path $BinDir -Force | Out-Null
+}
 
-# Create the man directory for future man files if it doesn't exist.
-mkdir -p "$FOUNDRY_MAN_DIR"
+# Download URL for the latest nightly build (Windows AMD64)
+$DownloadUrl = "https://github.com/foundry-rs/foundry/releases/download/nightly/foundry_nightly_win32_amd64.zip"
 
-# Store the correct profile file (i.e. .profile for bash or .zshenv for ZSH).
-case $SHELL in
-*/zsh)
-    PROFILE="${ZDOTDIR-"$HOME"}/.zshenv"
-    PREF_SHELL=zsh
-    ;;
-*/bash)
-    PROFILE=$HOME/.bashrc
-    PREF_SHELL=bash
-    ;;
-*/fish)
-    PROFILE=$HOME/.config/fish/config.fish
-    PREF_SHELL=fish
-    ;;
-*/ash)
-    PROFILE=$HOME/.profile
-    PREF_SHELL=ash
-    ;;
-*)
-    echo "foundryup: could not detect shell, manually add ${FOUNDRY_BIN_DIR} to your PATH."
+Write-Host "Downloading latest Foundry binaries from: $DownloadUrl"
+try {
+    Invoke-WebRequest -Uri $DownloadUrl -OutFile $ZipPath -UseBasicParsing
+}
+catch {
+    Write-Error "Failed to download Foundry. Please check your internet connection or try installing via Cargo: cargo install --git https://github.com/foundry-rs/foundry foundry-cli anvil chisel"
     exit 1
-esac
+}
 
-# Only add foundryup if it isn't already in PATH.
-if [[ ":$PATH:" != *":${FOUNDRY_BIN_DIR}:"* ]]; then
-    # Add the foundryup directory to the path and ensure the old PATH variables remain.
-    # If the shell is fish, echo fish_add_path instead of export.
-    if [[ "$PREF_SHELL" == "fish" ]]; then
-        echo >> "$PROFILE" && echo "fish_add_path -a \"$FOUNDRY_BIN_DIR\"" >> "$PROFILE"
-    else
-        echo >> "$PROFILE" && echo "export PATH=\"\$PATH:$FOUNDRY_BIN_DIR\"" >> "$PROFILE"
-    fi
-fi
+Write-Host "Extracting to $BinDir..."
+Expand-Archive -Path $ZipPath -DestinationPath $BinDir -Force
 
-# Warn MacOS users that they may need to manually install libusb via Homebrew:
-if [[ "$OSTYPE" =~ ^darwin ]] && [[ ! -f /usr/local/opt/libusb/lib/libusb-1.0.0.dylib ]] && [[ ! -f /opt/homebrew/opt/libusb/lib/libusb-1.0.0.dylib ]]; then
-    echo && echo "warning: libusb not found. You may need to install it manually on MacOS via Homebrew (brew install libusb)."
-fi
+# Unblock the extracted files to prevent Windows SmartScreen issues
+Get-ChildItem -Path "$BinDir\*" -Recurse | Unblock-File
 
-echo
-echo "Detected your preferred shell is $PREF_SHELL and added foundryup to PATH."
-echo "Run 'source $PROFILE' or start a new terminal session to use foundryup."
-echo "Then, simply run 'foundryup' to install Foundry."
+# Cleanup zip
+Remove-Item -Path $ZipPath -Force
+
+# Add to PATH if not already present
+$UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
+if ($UserPath -notlike "*$BinDir*") {
+    Write-Host "Adding $BinDir to user PATH..."
+    [Environment]::SetEnvironmentVariable("Path", "$UserPath;$BinDir", "User")
+    $env:Path += ";$BinDir"
+    Write-Host "Success! Foundry has been added to your PATH." -ForegroundColor Green
+    Write-Host "You may need to restart your terminal for changes to take effect." -ForegroundColor Yellow
+}
+else {
+    Write-Host "Foundry directory is already in your PATH." -ForegroundColor Green
+}
+
+Write-Host "Verifying installation..."
+try {
+    & "$BinDir\forge.exe" --version
+    Write-Host "Foundry installed successfully!" -ForegroundColor Green
+}
+catch {
+    Write-Warning "Could not verify 'forge --version'. You might need to restart your terminal."
+}
