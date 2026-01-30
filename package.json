@@ -1,0 +1,12 @@
+{
+  "name": "zkredit-monorepo",
+  "private": true,
+  "workspaces": [
+    "client",
+    "mock-oracle"
+  ],
+  "scripts": {
+    "dev:client": "npm run dev --workspace=client",
+    "dev:oracle": "npm run dev --workspace=mock-oracle"
+  }
+}

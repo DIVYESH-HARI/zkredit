@@ -1,0 +1,28 @@
+# Node
+**/node_modules
+**/cache
+**/out
+**/dist
+**/.env
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+model.onnx
+*.pt
+
+# ZK
+*.pk
+*.vk
+*.srs
+witness.json
+proof.json
+
+# IDE
+.vscode/
+.idea/
+
+goal.md
+
+**/team_wallets.json
