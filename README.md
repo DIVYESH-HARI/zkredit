@@ -38,4 +38,10 @@ ZK-ML DeFi Project.
 
 ## Troubleshooting
 - **Foundry/EZKL missing**: Install them manually if the script fails.
-- **Windows**: Use `setup.ps1` or run inside WSL.
+- **Foundry/EZKL missing**:
+  - **Windows**: 
+    1. Install Rust: `winget install Rustlang.Rustup`
+    2. Refresh Env: `$env:PATH += ";$env:USERPROFILE\.cargo\bin"`
+    3. Install EZKL: `cargo install ezkl`
+    4. Install Foundry: `cargo install --git https://github.com/foundry-rs/foundry --profile local --force foundry-cli anvil chisel`
+
