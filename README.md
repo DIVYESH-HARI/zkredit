@@ -2,7 +2,7 @@
 
 **Privacy-Preserving DeFi Lending with Zero-Knowledge Machine Learning**
 
-ZKredit enables borrowers to prove their creditworthiness using Zero-Knowledge proofs without revealing sensitive financial data. This allows the protocol to offer better loan terms (lower collateral) to users with good credit while maintaining complete privacy.
+ZKredit enables borrowers to prove their creditworthiness using Zero-Knowledge proofs without revealing sensitive financial data. This allows the protocol to offer better loan terms (lower collateral) to users with good credit while maintaining complete privacy. 
 
 ---
 
@@ -20,6 +20,11 @@ ZKredit solves this with a **"Constraint Sandwich"** architecture:
 - **Zero-Knowledge Proofs**: Prove your score is valid without revealing the underlying data
 - **5-Layer Verification**: Multiple security layers catch attacks that any single check would miss
 - **zkTLS (PoC)**: Cryptographic proof that data came from a real bank HTTPS session
+
+---
+
+## Demo
+[![Watch the Demo Video](https://img.youtube.com/vi/YOUR_VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=jxueQdHYbR8?si=z2_8wZG6T0p9JoQN)
 
 ---
 
