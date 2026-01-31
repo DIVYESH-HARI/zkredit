@@ -29,7 +29,11 @@ contract ConstraintRegistry {
     address public owner;
     
     /// @notice Emitted when constraints are updated
-    /// @param constraints The new constraint values
+    /// @param minIncome The new minimum income
+    /// @param maxDTI The new maximum DTI
+    /// @param minCreditScore The new minimum credit score
+    /// @param collateralRatioGood The new collateral ratio for good credit
+    /// @param collateralRatioStandard The new collateral ratio for standard credit
     /// @param updatedBy Address that made the update
     /// @param timestamp Block timestamp of the update
     event ConstraintsUpdated(
@@ -153,5 +157,29 @@ contract ConstraintRegistry {
             return activeConstraints.collateralRatioGood;
         }
         return activeConstraints.collateralRatioStandard;
+    }
+    
+    /**
+     * @notice Gets the maximum allowed DTI ratio
+     * @return maxDTI in basis points (3000 = 30%)
+     */
+    function maxDTI() external view returns (uint256) {
+        return activeConstraints.maxDTI;
+    }
+    
+    /**
+     * @notice Gets the minimum required income
+     * @return minIncome in USD (scaled by 1e18)
+     */
+    function minIncome() external view returns (uint256) {
+        return activeConstraints.minIncome;
+    }
+    
+    /**
+     * @notice Gets the minimum required credit score
+     * @return minCreditScore (0-100 scale)
+     */
+    function minCreditScore() external view returns (uint256) {
+        return activeConstraints.minCreditScore;
     }
 }

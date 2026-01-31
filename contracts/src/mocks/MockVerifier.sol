@@ -15,8 +15,11 @@ contract MockVerifier is IVerifier {
     /// @notice Count of verification calls (for testing)
     uint256 public verifyCallCount;
     
-    /// @notice Last public signals received (for testing)
-    uint256[] public lastPubSignals;
+    /// @notice Last instances received (for testing)
+    uint256[] public lastInstances;
+    
+    /// @notice Last proof bytes received (for testing)
+    bytes public lastProof;
     
     constructor(bool _shouldPass) {
         shouldPass = _shouldPass;
@@ -26,15 +29,14 @@ contract MockVerifier is IVerifier {
      * @notice Mock verification - returns configured result
      */
     function verifyProof(
-        uint256[2] calldata,
-        uint256[2][2] calldata,
-        uint256[2] calldata,
-        uint256[] calldata _pubSignals
+        bytes calldata proof,
+        uint256[] calldata instances
     ) external override returns (bool) {
         verifyCallCount++;
-        delete lastPubSignals;
-        for (uint256 i = 0; i < _pubSignals.length; i++) {
-            lastPubSignals.push(_pubSignals[i]);
+        lastProof = proof;
+        delete lastInstances;
+        for (uint256 i = 0; i < instances.length; i++) {
+            lastInstances.push(instances[i]);
         }
         return shouldPass;
     }

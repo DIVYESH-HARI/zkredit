@@ -2,29 +2,38 @@
 
 ZK-ML DeFi Project.
 
-## Quick Start
+## Quick Start (Windows)
 
 ### Prerequisites
-- Node.js v18+
-- Python 3.10+
-- [Foundry](https://book.getfoundry.sh/getting-started/installation)
-- [EZKL](https://github.com/zkonduit/ezkl) (requires Rust)
+- [Node.js v18+](https://nodejs.org/)
+- [Python 3.10+](https://www.python.org/)
+- [Rust](https://www.rust-lang.org/tools/install) (Required for EZKL & Foundry)
+  - run `winget install Rustlang.Rustup` in PowerShell
 
 ### Installation
 
-1. Run the setup script:
-   ```bash
-   ./setup.sh
-   # OR for PowerShell
+1. **Run the setup script (PowerShell)**:
+   ```powershell
    ./setup.ps1
    ```
+   *This script aims to set up the directory structure and initialize workspaces.*
 
-2. Install dependencies:
+2. **Install remaining dependencies**:
+   If the setup script didn't install everything (common on fresh Windows setups):
+   ```powershell
+   # Install EZKL (requires Rust)
+   cargo install ezkl
+
+   # Install Foundry (requires Rust/Cargo)
+   cargo install --git https://github.com/foundry-rs/foundry --profile local --force foundry-cli anvil chisel
+   ```
+
+3. **Install Node dependencies**:
    ```bash
    npm install
    ```
 
-3. Start Client:
+4. **Start Client**:
    ```bash
    npm run dev:client
    ```
@@ -35,12 +44,11 @@ ZK-ML DeFi Project.
 - `client/`: React/Vite Frontend
 - `mock-oracle/`: Mock banking data provider (Node.js)
 - `scripts/`: Python ML training & utility scripts
+- `final_documentation.md`: **[COMPREHENSIVE PROJECT DOCUMENTATION](./final_documentation.md)** (Read this first!)
 
 ## Troubleshooting
-- **Foundry/EZKL missing**: Install them manually if the script fails.
-- **Foundry/EZKL missing**:
-  - **Windows**: 
-    1. Install Rust: `winget install Rustlang.Rustup`
-    2. Restart your terminal (or temporarily refresh PATH: `$env:PATH += ";$env:USERPROFILE\.cargo\bin"`)    3. Install EZKL: `cargo install ezkl`
-    4. Install Foundry: `cargo install --git https://github.com/foundry-rs/foundry --profile local --force foundry-cli anvil chisel`
-
+- **Command 'cargo' not found**: 
+  - Restart your terminal after installing Rust. 
+  - Ensure `%USERPROFILE%\.cargo\bin` is in your PATH.
+- **Execution Policy Errors**:
+  - Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` to allow running scripts.

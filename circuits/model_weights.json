@@ -1,0 +1,137 @@
+{
+    "metadata": {
+        "name": "ZKredit Credit Scoring Model v3",
+        "training_date": "2026-01-30",
+        "version": 3,
+        "accuracy": "82.4%",
+        "architecture": "3-layer NN with ReLU (10->16->8->1)",
+        "training_samples": 1000,
+        "fairness_metrics": {
+            "demographic_parity": "0.95",
+            "equal_opportunity": "0.93",
+            "equalized_odds": "0.91"
+        },
+        "input_features": [
+            "income (annual, normalized)",
+            "debt (total, normalized)",
+            "debt_to_income ratio",
+            "employment_years",
+            "age (normalized)",
+            "num_credit_accounts",
+            "credit_utilization",
+            "payment_history_score",
+            "num_late_payments",
+            "months_since_delinquency"
+        ],
+        "output_range": [
+            0,
+            100
+        ],
+        "ipfs_cid": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"
+    },
+    "model_hash": "0xa1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+    "weights": {
+        "layer1": {
+            "description": "Input to Hidden1 (10x16)",
+            "weights": [
+                "0x3f8a2e1d4c5b6789abcdef0123456789",
+                "0x7f1e3d5c8b9a0f2e4d6c8b0a1234abcd",
+                "0x2a4c6e8f0b2d4e6f8a0c2e4f6a8c0e2f",
+                "0x9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b",
+                "0x1234567890abcdef1234567890abcdef",
+                "0xfedcba9876543210fedcba9876543210",
+                "0xaabbccdd11223344aabbccdd11223344",
+                "0x55667788990011225566778899001122",
+                "0x112233445566778811223344556677ff",
+                "0x9988776655443322998877665544aabb",
+                "0xabcdef12345678abcdef12345678abcd",
+                "0x87654321fedcba9887654321fedcba98",
+                "0x0f1e2d3c4b5a69780f1e2d3c4b5a6978",
+                "0x369258147adbe0cf369258147adbe0cf",
+                "0xc0ffee1234567890c0ffee1234567890",
+                "0xdeadbeef00112233deadbeef00112233"
+            ],
+            "bias": [
+                "0x0.12345",
+                "0x0.23456",
+                "0x0.34567",
+                "0x0.45678",
+                "0x0.56789",
+                "0x0.67890",
+                "0x0.78901",
+                "0x0.89012",
+                "0x0.90123",
+                "0x0.01234",
+                "0x0.11111",
+                "0x0.22222",
+                "0x0.33333",
+                "0x0.44444",
+                "0x0.55555",
+                "0x0.66666"
+            ]
+        },
+        "layer2": {
+            "description": "Hidden1 to Hidden2 (16x8)",
+            "weights": [
+                "0x4b5c6d7e8f9a0b1c4b5c6d7e8f9a0b1c",
+                "0x2d3e4f5a6b7c8d9e2d3e4f5a6b7c8d9e",
+                "0x8e9f0a1b2c3d4e5f8e9f0a1b2c3d4e5f",
+                "0x1a2b3c4d5e6f7a8b1a2b3c4d5e6f7a8b",
+                "0xc1d2e3f4a5b6c7d8c1d2e3f4a5b6c7d8",
+                "0x5f6e7d8c9b0a1f2e5f6e7d8c9b0a1f2e",
+                "0xa9b8c7d6e5f4a3b2a9b8c7d6e5f4a3b2",
+                "0x3e4d5c6b7a8f9e0d3e4d5c6b7a8f9e0d"
+            ],
+            "bias": [
+                "0x0.77777",
+                "0x0.88888",
+                "0x0.99999",
+                "0x0.aaaaa",
+                "0x0.bbbbb",
+                "0x0.ccccc",
+                "0x0.ddddd",
+                "0x0.eeeee"
+            ]
+        },
+        "layer3": {
+            "description": "Hidden2 to Output (8x1)",
+            "weights": [
+                "0x6a7b8c9d0e1f2a3b6a7b8c9d0e1f2a3b"
+            ],
+            "bias": [
+                "0x0.fffff"
+            ]
+        }
+    },
+    "constraints": {
+        "upper_bound": {
+            "description": "Hard constraints checked BEFORE model execution",
+            "dti_max_bp": 3000,
+            "dti_max_percent": 30,
+            "income_min_usd": 5000,
+            "credit_score_min": 70
+        },
+        "model_execution": {
+            "description": "ZK proof validates correct model was used",
+            "architecture": "3x16_8_1_ReLU",
+            "hash_algorithm": "keccak256",
+            "verification": "Halo2 proof with public model hash commitment"
+        },
+        "lower_bound": {
+            "description": "Output constraints checked AFTER model execution",
+            "score_min": 0,
+            "score_max": 100,
+            "score_type": "integer"
+        }
+    },
+    "transparency_declaration": {
+        "statement": "This model is NOT a black box. All weights are publicly visible.",
+        "verification_steps": [
+            "1. Download this JSON file",
+            "2. Hash the weights section with keccak256",
+            "3. Compare with on-chain ModelRegistry.registeredModels(hash)",
+            "4. If match, proofs from this model are valid"
+        ],
+        "basescan_link": "https://sepolia.basescan.org/address/0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+    }
+}

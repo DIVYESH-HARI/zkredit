@@ -1,0 +1,106 @@
+{
+    "run_args": {
+        "tolerance": {
+            "val": 0.0,
+            "scale": 1.0
+        },
+        "input_scale": 13,
+        "param_scale": 13,
+        "scale_rebase_multiplier": 10,
+        "lookup_range": [
+            0,
+            0
+        ],
+        "logrows": 6,
+        "num_inner_cols": 2,
+        "variables": [
+            [
+                "batch_size",
+                1
+            ]
+        ],
+        "input_visibility": "Private",
+        "output_visibility": "Public",
+        "param_visibility": "Private",
+        "div_rebasing": false,
+        "rebase_frac_zero_constants": false,
+        "check_mode": "UNSAFE"
+    },
+    "num_rows": 11,
+    "total_assignments": 22,
+    "total_const_size": 0,
+    "model_instance_shapes": [
+        [
+            1,
+            1
+        ]
+    ],
+    "model_output_scales": [
+        26
+    ],
+    "model_input_scales": [
+        13
+    ],
+    "module_sizes": {
+        "kzg": [],
+        "poseidon": [
+            0,
+            [
+                0
+            ]
+        ]
+    },
+    "required_lookups": [],
+    "required_range_checks": [],
+    "check_mode": "UNSAFE",
+    "version": "9.1.0",
+    "num_blinding_factors": null,
+    "timestamp": 1769780482853,
+    "zkredit_constraints": {
+        "_comment": "Constraint Sandwich Configuration for ZKredit",
+        "upper_bound": {
+            "description": "Layer 1 - Hard constraints checked before proof verification",
+            "rules": [
+                {
+                    "name": "dti_max",
+                    "value": 3000,
+                    "unit": "basis_points",
+                    "check": "input[2] <= 3000"
+                },
+                {
+                    "name": "income_min",
+                    "value": 5000,
+                    "unit": "USD",
+                    "check": "input[0] * scale >= 5000e18"
+                },
+                {
+                    "name": "credit_score_min",
+                    "value": 70,
+                    "unit": "score",
+                    "check": "external_score >= 70"
+                }
+            ]
+        },
+        "model_execution": {
+            "description": "Layer 2 - Model execution verified via ZK proof",
+            "model_hash": "0xa1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+            "architecture": "10->16->8->1 ReLU NN",
+            "proof_system": "Halo2 via EZKL"
+        },
+        "lower_bound": {
+            "description": "Layer 3 - Output validation after model execution",
+            "rules": [
+                {
+                    "name": "score_min",
+                    "value": 0,
+                    "check": "output[0] >= 0"
+                },
+                {
+                    "name": "score_max",
+                    "value": 100,
+                    "check": "output[0] <= 100"
+                }
+            ]
+        }
+    }
+}
